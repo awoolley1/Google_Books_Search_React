@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
-import API from "../../api/randomUser.js";
-import Table from 'react-bootstrap/Table'
-import Button from 'react-bootstrap/Button'
+import API from "../../api/googleSearch";
+import Table from 'react-bootstrap/Table';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
@@ -14,7 +13,7 @@ function Books() {
     API.getBook()
       .then((res) => {
         console.log(res);
-        setData(res.data.results);
+        setData(res.data.items);
         console.log(data);
       })
       .catch((err) => console.log(err));
@@ -32,20 +31,28 @@ function Books() {
 </tr>
 </thead><tbody>
 
-{data.map((book, index) => (
+{data.map((book, index) => {
+  
+  return (
   <tr key={index}>
   
- <td>{book.name.first}</td>
- <td>{book.name.last}</td>
- <td>{book.email}</td>
- <td><img src={user.picture.thumbnail} alt="headshot"/></td>
- <td>{book.location.city}</td>
+ <td>{book.volumeInfo.title}</td>
+ <td>{book.volumeInfo.authors[0]}</td>
+ <td>{book.description}</td>
+ 
+ { 
+   book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.smallThumbnail ? 
+    (<td><img src={ book.volumeInfo.imageLinks.smallThumbnail}  alt="thumbnail" /> </td>)  :  (<td>Else</td>)
+}
+
+ 
  </tr>
- )
+ )}
 )}
 </tbody>
 </Table>
   );
+ // <td>{book.previewLink}</td>
 }
 
 export default Books;
